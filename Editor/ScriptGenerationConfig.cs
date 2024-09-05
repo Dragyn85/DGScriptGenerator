@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,14 +10,15 @@ namespace DragynGames.Editor.ScriptGeneration
         public const string NAMESPACE_PLACEHOLDER = "#NAMESPACE#";
         public const string NAMESPACE_END_PLACEHOLDER = "#NAMESPACEEND#";
         
-        public string baseFolder = "Assets/Scripts";
+        private const string packageTemplateFolder = "Packages/com.dragyngames.dgscriptgenerator/Editor/Templates/";
+        
         public ScriptTypeSettings[] scriptTypeAndFolders = new ScriptTypeSettings[]
         {
-            new ScriptTypeSettings {scriptType = "ISystem", TemplateName = "ISystem", defaultFolder = "Systems",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
-            new ScriptTypeSettings {scriptType = "IJobEntity",TemplateName = "IJobEntity", defaultFolder = "JobEntities",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
-            new ScriptTypeSettings {scriptType = "IComponentData",TemplateName = "IComponentData", defaultFolder = "ComponentDatas",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
-            new ScriptTypeSettings {scriptType = "Baker",TemplateName = "Baker", defaultFolder = "Authoring",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}Authoring"},
-            new ScriptTypeSettings {scriptType = "MonoBehaviour",TemplateName = "MonoBehaviour", defaultFolder = "MonoBehaviours",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
+            new ScriptTypeSettings {scriptType = "ISystem", templatePath = packageTemplateFolder+"ISystemTemplate.txt", defaultFolder = "Systems",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
+            new ScriptTypeSettings {scriptType = "IJobEntity",templatePath = packageTemplateFolder+"IJobEntityTemplate.txt", defaultFolder = "JobEntities",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
+            new ScriptTypeSettings {scriptType = "IComponentData",templatePath = packageTemplateFolder+"IComponentDataTemplate.txt", defaultFolder = "ComponentDatas",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
+            new ScriptTypeSettings {scriptType = "Baker",templatePath = packageTemplateFolder+"BakerTemplate.txt", defaultFolder = "Authoring",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}Authoring"},
+            new ScriptTypeSettings {scriptType = "MonoBehaviour",templatePath = packageTemplateFolder+"MonoBehaviourTemplate.txt", defaultFolder = "MonoBehaviours",fileNameModification = $"{CLASS_NAME_PLACEHOLDER}"},
         };
 
 
@@ -48,13 +48,13 @@ namespace DragynGames.Editor.ScriptGeneration
             return "";
         }
         
-        public string GetTemplateName(string scriptType)
+        public string GetTemplateFilePath(string scriptType)
         {
             foreach (ScriptTypeSettings scriptTypeAndFolder in scriptTypeAndFolders)
             {
                 if (scriptTypeAndFolder.scriptType == scriptType)
                 {
-                    return scriptTypeAndFolder.TemplateName;
+                    return scriptTypeAndFolder.templatePath;
                 }
             }
 
@@ -73,14 +73,4 @@ namespace DragynGames.Editor.ScriptGeneration
             return "";
         }
     }
-}
-
-[Serializable]
-public class ScriptTypeSettings
-{
-    public string scriptType;
-    public string TemplateName;
-    public string defaultFolder;
-    public string fileNameModification;
-    public List<string> subFolders = new List<string>();
 }

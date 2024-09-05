@@ -10,7 +10,7 @@ namespace DragynGames.Editor.ScriptGeneration
         public ScriptGenerationConfig GetConfig()
         {
             ScriptGenerationConfig config = null;
-            string savedConfigPath = ProjectSettingsPath.GetConfigPath();
+            string savedConfigPath = ScriptGeneratorProjectSettings.GetConfigPath();
             if (!string.IsNullOrEmpty(savedConfigPath))
             {
                 config = AssetDatabase.LoadAssetAtPath<ScriptGenerationConfig>(savedConfigPath);
@@ -33,7 +33,7 @@ namespace DragynGames.Editor.ScriptGeneration
                     "OK");
 
                 // Save path to EditorPrefs
-                ProjectSettingsPath.SetConfigPath(path);
+                ScriptGeneratorProjectSettings.SetConfigPath(path);
                 return config;
             }
 
@@ -52,7 +52,7 @@ namespace DragynGames.Editor.ScriptGeneration
                 if (config != null)
                 {
                     // Save the path in EditorPrefs
-                    ProjectSettingsPath.SetConfigPath(relativePath);
+                    ScriptGeneratorProjectSettings.SetConfigPath(relativePath);
                     EditorUtility.DisplayDialog("Config Loaded", "Config loaded from: " + relativePath, "OK");
                     return config;
                 }

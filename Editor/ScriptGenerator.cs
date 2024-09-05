@@ -19,7 +19,7 @@ public class ScriptGenerator
             return;
         }
         
-        string folderPath = Path.Combine(config.baseFolder, defaultFolder, subFolder);
+        string folderPath = Path.Combine(ScriptGeneratorProjectSettings.GetBaseFolderPath(), defaultFolder, subFolder);
         if (!Directory.Exists(folderPath))
         {
             Directory.CreateDirectory(folderPath);
@@ -28,7 +28,7 @@ public class ScriptGenerator
         string scriptPath = Path.Combine(folderPath, $"{scriptFileName}.cs");
 
 
-        string packageTemplateFolder = Path.Combine(packageTemplatePath,$"{config.GetTemplateName(scriptType)}Template.txt");
+        string packageTemplateFolder = Path.Combine(config.GetTemplateFilePath(scriptType));
         
         //string templatePath = $"Assets/DGDotsTools/Editor/Templates/{config.GetTemplateName(scriptType)}Template.txt";
         string templatePath = packageTemplateFolder;

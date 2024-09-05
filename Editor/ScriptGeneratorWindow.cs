@@ -7,21 +7,26 @@ namespace DragynGames.Editor.ScriptGeneration
 {
     public class ScriptGeneratorWindow : EditorWindow
     {
+        private static ScriptGeneratorWindow window;
+        
         private ScriptGenerationConfig lastConfig;
         private ScriptGenerationConfig config;
         public ScriptGenerator scriptGenerator;
 
+        private string[] scriptTypes;
         private string scriptName = "NewScript";
         private int selectedScriptType = 0;
         private int selectedSubFolderIndex = 0;
         private string newSubFolder = "";
-
         private ConfigHandler configHandler;
+        private bool showExtraSettings = false;
+        private int selectedExtraSettings = 0;
+        
 
         [MenuItem("DG Tools/Script Generator")]
         public static void ShowWindow()
         {
-            GetWindow<ScriptGeneratorWindow>("Script Generator");
+            window = GetWindow<ScriptGeneratorWindow>("Script Generator");
         }
 
         private void OnEnable()
@@ -33,11 +38,35 @@ namespace DragynGames.Editor.ScriptGeneration
 
         private void OnGUI()
         {
+            if (ShowConfigFileSelection()) return;
+
+            ShowScriptSelection();
+
+            ShowSubfolderSelection();
+
+            ExtraSettings();
+
+            EditorGUILayout.Space(10);
+
+            
+        }
+
+        private void ExtraSettings()
+        {
+            showExtraSettings = EditorGUILayout.Foldout(showExtraSettings, "Extra settings");
+            if (showExtraSettings)
+            {
+                ShowExtraSettings();
+            }
+        }
+
+        private bool ShowConfigFileSelection()
+        {
             config = (ScriptGenerationConfig) EditorGUILayout.ObjectField("Config", config,
                 typeof(ScriptGenerationConfig), false);
             if(lastConfig != null && lastConfig != config)
             {
-                ProjectSettingsPath.SetConfigPath(AssetDatabase.GetAssetPath(config));
+                ScriptGeneratorProjectSettings.SetConfigPath(AssetDatabase.GetAssetPath(config));
             }
             
             lastConfig = config;
@@ -55,23 +84,14 @@ namespace DragynGames.Editor.ScriptGeneration
                     config = configHandler.LoadExistingConfig();
                 }
 
-                return;
-            }
-            /*
-            //Grid layout script selection
-            EditorGUILayout.LabelField("Select Script Type:");
-            
-            string[] scriptTypes = new string[config.scriptTypeAndFolders.Length];
-            for (int i = 0; i < config.scriptTypeAndFolders.Length; i++)
-            {
-                scriptTypes[i] = config.scriptTypeAndFolders[i].scriptType;
+                return true;
             }
 
-            selectedScriptType = GUILayout.SelectionGrid(selectedScriptType, scriptTypes, 2);
-            EditorPrefs.SetInt("SelectedScriptType", selectedScriptType);
-            EditorGUILayout.Space();
-            */
-            
+            return false;
+        }
+
+        private void ShowScriptSelection()
+        {
             EditorGUILayout.LabelField("Select Script Type:");
 
             string[] scriptTypes = new string[config.scriptTypeAndFolders.Length];
@@ -79,37 +99,68 @@ namespace DragynGames.Editor.ScriptGeneration
             {
                 scriptTypes[i] = config.scriptTypeAndFolders[i].scriptType;
             }
-
-            // Display the dropdown for selecting the script type
+            
             selectedScriptType = EditorGUILayout.Popup("Script Type", selectedScriptType, scriptTypes);
             EditorPrefs.SetInt("SelectedScriptType", selectedScriptType); // Save the selection in EditorPrefs
             EditorGUILayout.Space();
             
             scriptName = EditorGUILayout.TextField("Script Name", scriptName);
+            this.scriptTypes = scriptTypes;
+        }
 
-            // Display dropdown for selecting subfolder
+        private void ShowSubfolderSelection()
+        {
             List<string> subFolders = config.GetSubFolders(scriptTypes[selectedScriptType]);
             if (subFolders.Count == 0)
             {
                 subFolders.Add("None");
+                selectedSubFolderIndex = 0;
             }
 
             selectedSubFolderIndex = EditorGUILayout.Popup("Subfolder", selectedSubFolderIndex, subFolders.ToArray());
+            
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Create Script", GUILayout.Height(40)))
+            {
+                CreateScript(scriptTypes[selectedScriptType], subFolders[selectedSubFolderIndex]);
+            }
+        }
 
+        private void ShowExtraSettings()
+        {
+            selectedExtraSettings = GUILayout.SelectionGrid(selectedExtraSettings, new string[] {"Sub folder", "Namespace"}, 3);
+            switch (selectedExtraSettings)
+            {
+                case 0:
+                    ShowSubfolderCreation();
+                    break;
+                case 1:
+                    ShowNamespaceSettings();
+                    break;
+            }
+            
+            
+        }
+
+        private void ShowNamespaceSettings()
+        {
+            EditorGUILayout.LabelField("Namespace");
+        }
+
+        private void ShowSubfolderCreation()
+        {
+            EditorGUILayout.LabelField("New subfolder");
+            EditorGUILayout.BeginHorizontal();
             // Input field and button to add a new subfolder
-            newSubFolder = EditorGUILayout.TextField("New Subfolder", newSubFolder);
+
+            newSubFolder = EditorGUILayout.TextField(newSubFolder);
             if (GUILayout.Button("Create Subfolder"))
             {
                 CreateSubfolder(newSubFolder);
                 newSubFolder = "";
             }
 
-            EditorGUILayout.Space();
-
-            if (GUILayout.Button("Create Script"))
-            {
-                CreateScript(scriptTypes[selectedScriptType], subFolders[selectedSubFolderIndex]);
-            }
+            EditorGUILayout.EndHorizontal();
         }
 
         // Adds a new subfolder to the list and saves it

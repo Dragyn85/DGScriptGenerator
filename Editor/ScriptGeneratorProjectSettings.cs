@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
-public static class ProjectSettingsPath
+public static class ScriptGeneratorProjectSettings
 {
     private static string settingsFilePath = "ProjectSettings/ScriptGenerationSettings.json";
 
@@ -11,6 +11,7 @@ public static class ProjectSettingsPath
     public class ScriptGenerationSettings
     {
         public string configPath;
+        public string baseFolderPath;
     }
 
     private static ScriptGenerationSettings settings;
@@ -39,6 +40,22 @@ public static class ProjectSettingsPath
                         // Convert absolute path to relative path
                         string relativePath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
                         settings.configPath = relativePath;
+                        SaveSettings();
+                    }
+                }
+                
+                EditorGUILayout.LabelField("Base script folder", EditorStyles.boldLabel);
+                settings.baseFolderPath = EditorGUILayout.TextField("path", settings.baseFolderPath);
+
+                // Button to select a new config path
+                if (GUILayout.Button("Browse for folder"))
+                {
+                    string selectedPath = EditorUtility.OpenFolderPanel("Select base folder", "Assets", "asset");
+                    if (!string.IsNullOrEmpty(selectedPath))
+                    {
+                        // Convert absolute path to relative path
+                        string relativePath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
+                        settings.baseFolderPath = relativePath;
                         SaveSettings();
                     }
                 }
@@ -94,11 +111,27 @@ public static class ProjectSettingsPath
         // Save the updated settings
         SaveSettings();
     }
+    public static void SetBaseFolderPath(string path)
+    {
+        // Ensure settings are loaded before modifying
+        LoadSettings();
+
+        // Update the config path
+        settings.baseFolderPath = path;
+
+        // Save the updated settings
+        SaveSettings();
+    }
     
     // Get the config path (public method for accessing the stored path)
     public static string GetConfigPath()
     {
         LoadSettings();
         return settings.configPath;
+    }
+    public static string GetBaseFolderPath()
+    {
+        LoadSettings();
+        return settings.baseFolderPath;
     }
 }

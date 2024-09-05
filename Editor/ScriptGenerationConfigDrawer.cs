@@ -14,31 +14,17 @@ namespace DragynGames.Editor.ScriptGeneration
             base.OnInspectorGUI();
 
             ScriptGenerationConfig config = (ScriptGenerationConfig) target;
-            if (GUILayout.Button("Get folder path"))
+            if (GUILayout.Button("Change base folder"))
             {
                 // Open folder selection dialog
                 string path = EditorUtility.OpenFolderPanel("Select folder", "", "");
                 if (!string.IsNullOrEmpty(path))
                 {
-                    string baseFolder = config.baseFolder;
+                    string relativePath = "Assets" + path.Substring(Application.dataPath.Length + 1);
                     
-                    //remove all text before baseFolder
-                    int index = path.IndexOf(baseFolder);
-                    if (index != -1)
-                    {
-                        path = path.Substring(index);
-                        //remove baseFolder from path
-                        path = path.Replace(baseFolder+"/", "");
-                        
-                        //copy path to clipboard
-                        
-                        EditorGUIUtility.systemCopyBuffer = path;
-                        Debug.Log("Copied path to clipboard: " + path);
-                    }
-                    else
-                    {
-                        Debug.LogError("Selected folder is not in the base folder");
-                    }
+                    //set projectsetings baseFolderPath to releativePath
+                    ScriptGeneratorProjectSettings.SetBaseFolderPath(relativePath);
+                    EditorUtility.DisplayDialog("Base folder set", $"Base folder set to {relativePath} in project settings", "OK");
                 }
             }
         }
