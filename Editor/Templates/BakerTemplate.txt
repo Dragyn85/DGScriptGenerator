@@ -1,0 +1,24 @@
+using Unity.Entities;
+using UnityEngine;
+
+public class #SCRIPTNAME#Authoring : MonoBehaviour
+{
+    
+    
+    public class Baker : Baker<#SCRIPTNAME#Authoring>
+    {
+        public override void Bake(#SCRIPTNAME#Authoring authoring)
+        {
+            Entity entity = GetEntity(TransformUsageFlags.Dynamic);
+            AddComponent(entity, new #SCRIPTNAME#()
+            {
+                
+            });
+        }
+    }
+}
+
+public struct #SCRIPTNAME# : IComponentData
+{
+    
+}

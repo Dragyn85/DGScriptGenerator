@@ -1,0 +1,12 @@
+using Unity.Burst;
+using Unity.Entities;
+
+partial struct #SCRIPTNAME# : ISystem
+{
+    
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        
+    }
+}
