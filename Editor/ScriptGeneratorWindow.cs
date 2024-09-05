@@ -18,7 +18,7 @@ namespace DragynGames.Editor.ScriptGeneration
 
         private ConfigHandler configHandler;
 
-        [MenuItem("Tools/Script Generator")]
+        [MenuItem("DG Tools/Script Generator")]
         public static void ShowWindow()
         {
             GetWindow<ScriptGeneratorWindow>("Script Generator");
