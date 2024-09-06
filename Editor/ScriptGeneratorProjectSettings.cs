@@ -11,7 +11,7 @@ public static class ScriptGeneratorProjectSettings
     public class ScriptGenerationSettings
     {
         public string configPath;
-        public string baseFolderPath;
+        public string baseFolderPath = "Assets/Scripts";
     }
 
     private static ScriptGenerationSettings settings;
