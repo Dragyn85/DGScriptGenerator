@@ -28,7 +28,21 @@ This will output an empty script in the folder "Assets/Scripts/Systems" by defau
 6. Click <b>Create script</b> to create the script.
 7. A dialog will ask if you want to open the file.
 
-#### Settings
-You can edit the settings in the config file you created.
+#### Adding your own templates
+1. Navigate to and select your ScriptGenerationConfig SO.
 
-More instructions coming soon.
+![Script Generator Config:](./Images/Step3.png)
+
+3. Click the + button to add a new Script Type
+4. <b>Script type</b> is shown in the editor window as a selectable type.
+5. <b>TemplatePath</b> is the path to the template, assign by using button below.
+6. <b>Default folder</b> is where the scripts will be created.
+7. <b>File Name Modification</b> can be used to add prefix or sufix to the files that are created. mostly left as _#SCRIPTNAME#
+
+#### Template File structure
+_#SCRIPTNAME# will be replaced by the scriptname you enter when creating a new script.
+
+![Script Template:](./Images/Step4.png)
+
+#### TODO
+Add Namespace support
